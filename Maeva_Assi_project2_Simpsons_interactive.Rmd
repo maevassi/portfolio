@@ -1,0 +1,508 @@
+---
+title: "Wrangling The Simpsons"
+author: "Maeva Assi"
+date: "2025-04-11"
+output: 
+  learnr::tutorial:
+    progressive: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(include = FALSE)
+library(learnr)
+library(tidyverse)
+library(ggplot2)
+
+#Read the data
+simpsons_characters <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-02-04/simpsons_characters.csv')
+simpsons_episodes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-02-04/simpsons_episodes.csv')
+simpsons_script_lines <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-02-04/simpsons_script_lines.csv')
+```
+
+## Introduction & Setup
+
+In this simple and interactive data wrangling tutorial, you will learn how to:
+
+* use `filter()` and `arrange()` to manipulate rows;
+* use `select()`, `mutate()` and `summarize()` to manipulate and create columns;
+* use `join()` to join tables together;
+* use `ggplot()`to visualize data.
+
+We will use the [Simpson Dataset Kaggle](https://www.kaggle.com/datasets/prashant111/the-simpsons-dataset/data) which
+is composed of `simpsons_characters`, `simpsons_episodes` and `simpsons_script_lines`, respectively containing character details, episode details, and script lines for approximately 600 Simpsons episodes.
+
+By the end of tutorial, you'll be able to know or comment on:
+- which season has the highest IMDb rating;
+- how has the IMDb ratings changed over the seasons;
+- which character has the most spoken lines across all episodes;
+- whether there is a relationship between word count and IMDb rating?
+
+*Please note that episodes and script lines have been filtered to only include episodes from 2010 to 2016.*
+
+*Click [here](https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-02-04/readme.md) for a Github link to the data.*
+
+## Setup
+I've already loaded the data for you, but let's load the tidyverse and ggplot2 packages together.
+```{r setup2, exercise = TRUE}
+#Load packages
+library(tidyverse)
+library(ggplot2)
+```
+
+## I. Manipulating rows
+
+First, let's look at the `simpsons_characters` data. It has the following variables:
+
+- id:	unique identifier for each character record.
+- name:	full name associated with the character record.
+- normalized_name: lowercase version of the character name.
+- gender:	gender associated with the character record ("f", "m", or NA).
+
+Take a look at the data before we manipulate it:
+```{r lookatdata, message=FALSE, warning=FALSE, exercise=TRUE, paged.print=TRUE}
+simpsons_characters
+```
+The row count indicates that there are 6,722 characters reported on The Simpsons.
+
+## a. filter()
+Many characters do not have a reported gender, sometimes because they're minor characters or one entry represents a group of people ("Students", or "Children" for example).\
+
+Let's try to find out how many characters were reported as **female**.\
+The verb `filter()` extracts specific rows from a data frame that meet one or multiple logical criterion.\
+To filter for the criteria of interest, you use the **"==" logical operator**, which means "is equal to".
+For example, to filter the gender for female characters only, you'd write:
+```{r filter1, exercise = TRUE, exercise.eval = FALSE}
+simpsons_characters |>
+  filter(gender == "f")
+```
+The row count indicates that there are 71 characters reported on The Simpsons as female.
+
+```{r filter-question, echo = FALSE}
+question("If we wanted to filter for male characters, what would be the correct code?",
+         answer("simpsons_characters |> filter(\"m\")"),
+         answer("simpsons_characters |> filter(gender == \"m\")", correct = TRUE),
+         answer("simpsons_characters |> filter(gender = \"m\")")
+)
+#I get this message "The shiny_prerendered_chunk function can only be called from within a shiny server compatible document", maybe you'll be able to display the quiz?
+```
+
+
+Your turn! Edit the code to filter for male characters:
+```{r filter2, exercise = TRUE, exercise.eval = FALSE}
+simpsons_characters |>
+  filter(gender == "f")
+```
+
+```{r filter2-solution}
+simpsons_characters |>
+  filter(gender == "m")
+```
+
+By the way, it is sometimes easier to define what you **don't** want as your criteria.\
+In this case, you use the **"!=" logical operator**, which means "not equal to".\
+If we wanted to filter for characters with a defined gender only (so excluding characters with the gender "NA"):
+```{r filter3, exercise = TRUE, exercise.eval = FALSE}
+simpsons_characters |>
+  filter(gender != "NA")
+```
+
+
+## b. arrange()
+Notice the order of the `id` values. It could be preferable to have the id numbers in ascending order.\
+You can use `arrange()` to reorder your rows in ascending (default) or descending order.\
+The code to reorder the data by ascending descending order of `id` number is:
+```{r arrange1, exercise = TRUE, exercise.eval = FALSE}
+simpsons_characters |>
+  arrange(id)
+```
+*NB: For descending order, you would use `arrange(desc(id))` .*\
+
+
+Your turn! Edit the code to filter for female characters and reorder their names in alphabetical order:
+```{r arrange2, exercise = TRUE, exercise.eval = FALSE}
+simpsons_characters |>
+  filter(gender == "f") |>
+  arrange(id)
+```
+
+```{r arrange2-solution}
+simpsons_characters |>
+  filter(gender == "m") |>
+  arrange(name)
+```
+
+
+## II. Manipulating and creating columns
+Now let's look at the `simpsons_episodes` data.
+Take a look at the data before we manipulate it:
+```{r lookatdata2, message=FALSE, warning=FALSE, exercise=TRUE, paged.print=TRUE}
+simpsons_episodes
+```
+It has the following variables:
+- id:	unique identifier for each episode record.
+- image_url: URL linking to the image associated with the episode record.
+- imdb_rating:	IMDb rating for the episode.
+- imdb_votes:	number of votes received on IMDb for the episode.
+- number_in_season:	episode number within the season.
+- number_in_series:	episode number within the series.
+- original_air_date:	date the episode originally aired.
+- original_air_year:	year the episode originally aired.
+- production_code:	code used in production to identify the episode.
+- season: season number of the episode.
+- title:	title of the episode.
+- us_viewers_in_millions:	number of viewers in the U.S. in millions.
+- video_url:	URL linking to the video associated with the record.
+- views: total number of views recorded for the episode video URL.
+
+### a. select()
+That's a lot of variables to keep track of...\
+We're only interested in the **id, imdb_rating, number_in_season, number_in_series, original_air_year, season, title and us_viewers_in_millions** variables.\
+Extracting relevant columns is easy using the verb `select()`. We're going to save our selection as an object called `simpsons_eps_clean`.
+
+```{r cleaning-episodes, exercise = TRUE, exercise.eval = FALSE}
+simpsons_eps_clean <- simpsons_episodes |>
+  select(
+    id,
+    imdb_rating,
+    number_in_season,
+    number_in_series,
+    original_air_year,
+    season,
+    title,
+    us_viewers_in_millions)
+simpsons_eps_clean
+```
+
+```{r include=FALSE}
+#I'm also creating it as a global to avoid knitting issues
+simpsons_eps_clean <- simpsons_episodes |>
+  select(
+    id,
+    imdb_rating,
+    number_in_season,
+    number_in_series,
+    original_air_year,
+    season,
+    title,
+    us_viewers_in_millions)
+```
+
+
+## b. summarize()
+There are 151 episodes. Let's see how those episodes are divided through seasons.\
+To do this, you want to calculate the total number of episodes **by season**. The count is calculated using `n()`.\
+
+`summarize()` is useful to create a new table of summary statistics for a group.
+Let's call our new variable `total_episode_count`.
+```{r summarize1, exercise = TRUE, exercise.setup = "cleaning-episodes", exercise.eval = FALSE}
+simpsons_eps_clean |>
+  summarize(total_episode_count = n(),
+            .by = season) |>
+  arrange(desc(total_episode_count))
+```
+
+
+Your turn!\
+Let's find out which season had the best average IMDb rating using `summarize()` .\
+Not all episodes of season 28 had ratings, so make sure to filter those out.
+You want to calculate the **mean imdb_rating by season** using `mean()` and call the resulting variable `avg_imdb_season_rating`.\
+Use `arrange()` to reorder your rows in descending order!\
+Save your work under a new object `simpsons_seasons`.\
+*Don't forget that `arrange()` sorts by ascending order by default.*
+```{r summarize2, exercise = TRUE, exercise.setup = "cleaning-episodes", exercise.eval = FALSE}
+simpsons_seasons <- simpsons_eps_clean |>
+  filter(imdb_rating != "") |>
+  summarize(avg_imdb_season_rating = mean(...),
+            .by = ...) |>
+  arrange(...)
+
+simpsons_seasons
+```
+
+```{r summarize2-solution}
+simpsons_seasons <- simpsons_eps_clean |>
+  filter(imdb_rating != "NA") |>
+  summarize(avg_imdb_season_rating = mean(imdb_rating),
+            .by = season) |>
+  arrange(desc(avg_imdb_season_rating))
+
+simpsons_seasons
+```
+
+Season 25 is the season with highest average IMDb rating of 6.83!\
+
+## c. mutate()
+Season 25 has the highest average IMDb rating, but it is not necessarily the season with the highest ratings or highest rated episode.\
+We should explore more of the IMDb ratings summary statistics per season, such as the standard deviation (using `sd()`) and the range.\
+There's no direct formula for the range so we'll use a different function to calculate it "manually" later on.\
+
+First, using `summarize()`, we create a new table with the mean, standard deviation, and lowest and highest IMDb ratings:
+```{r summarize3, exercise = TRUE, exercise.setup = "cleaning-episodes", exercise.eval = FALSE}
+simpsons_summary <- simpsons_eps_clean |>
+  filter(imdb_rating != "NA") |>
+  summarize(max_imdb = max(imdb_rating),
+            min_imdb = min(imdb_rating),
+            avg_imdb_rating = mean(imdb_rating),
+            sd_imdb_rating = sd(imdb_rating),
+            .by = season)
+
+simpsons_summary
+```
+
+To calculate the range, we'll use `mutate()`, a function that lets you create a new column based on other columns.\
+The formula for the range would be max_imdb - min_imdb, which we plug in `mutate()`, and we'll call the resulting column `imdb_range`:
+```{r mutate, exercise = TRUE, exercise.setup = "summarize3", exercise.eval = FALSE}
+simpsons_summary |>
+  mutate(range_imdb_rating = max_imdb - min_imdb) |>
+  arrange(desc(range_imdb_rating))
+```
+Season 27 and season 23 both had one of the highest rated episodes (8.2 and 8.4 respectively), but they also both have the top two highest ranges (2.5 and 3.7 respectively) indicating that they're are the two seasons with the most variation in ratings. Their standard deviations are also the highest, which corroborates their higher variation.
+
+
+## III. Joining data
+A **join** is a way to combine 2 dataframes based on common columns called keys.\
+To find out which character spoke the most words, which season had the most spoken words, and which character spoke the most words per season and whether there is a correlation between spoken words and IMDb ratings, we will ultimately join together all of our three data files about character details, episode details, and script lines.
+
+Our last data `simpsons_script_lines` has the following variables:
+
+- id: identifier for each script line.
+- episode_id:	identifier for the episode in which the line appears.
+- number:	sequential number of the line within the episode.
+- raw_text:	the original text of the script line.
+- timestamp_in_ms:	timestamp of the line in milliseconds.
+- speaking_line:	indicates whether the line is spoken by a character.
+- character_id:	identifier for the character speaking the line.
+- location_id:	identifier for the location where the line is spoken.
+- raw_character_text:	original text of the character's name.
+- raw_location_text:	original text of the location name.
+- spoken_words:	words spoken by the character in the line.
+- normalized_text:	lowercase version of the script line.
+- word_count:	number of words in the line.
+
+We're only interested in the **id, episode_id, character_id and word_count**.\
+
+Using the first verb you learned in this tutorial, edit the code to only *select* the columns of interest from `simpsons_script_lines`.\
+Save the selection to a new object called `simpsons_lines`.
+```{r select2, exercise.setup = "cleaning-episodes", exercise = TRUE, exercise.eval = FALSE}
+simpsons_lines <- simpsons_script_lines |>
+  ...(...)
+
+simpsons_lines
+```
+
+```{r select2-solution, exercise.setup = "cleaning-episodes"}
+simpsons_lines <- simpsons_script_lines |>
+  select(id,
+         episode_id,
+         character_id,
+         word_count)
+
+simpsons_lines
+```
+
+## a. Joining the script lines to the characters
+Did you notice that `simpsons_characters` and `simpsons_lines` have a **common variable** to identify a character?\
+That variable is called `id` and `character_id` for each respectively and will come in handy to join the data.\
+
+`left_join` allow us to join `simpsons_characters` and `simpsons_lines` together using that common variable as a key.
+
+```{r join1, warning=FALSE, exercise.setup = "select2-solution", exercise=TRUE}
+#Joining line data to character data
+simpsons_chara_lines <- left_join(simpsons_characters, simpsons_lines,
+          by = c("id" = "character_id"))
+
+simpsons_chara_lines
+```
+
+How did `left_join`work exactly? It:
+
+- Used the keys in `simpsons_characters` to find the matching keys in `simpsons_lines`;
+- Added on `simpsons_lines` new columns; 
+- Retained all rows originally in `simpsons_characters`.
+
+
+Because `simpsons_characters` already had a variable called "`id`" to identify characters, the variable called "`id`" to identify lines from `simpsons_lines` became "`id.y`" after joining.\
+But that name is  a bit confusing as it is not self-explanatory.\
+Thankfully, renaming variables is easy using `rename()` following this template `rename(new_name = old_name)`:
+```{r rename1, warning=FALSE, exercise.setup = "join1", exercise=TRUE}
+simpsons_chara_lines <- simpsons_chara_lines |>
+  rename(line_id = id.y)
+```
+
+## b. Joining the characters + script lines to the episodes
+Now did you notice that `simpsons_eps_clean` and your newly created `simpsons_chara_lines` have a **common variable** to identify an episode?\
+That variable is called `id` and  `episode_id` for each respectively.\
+Using that as your keys, edit the code to join `simpsons_eps_clean` and `simpsons_chara_lines` into a new object called `simpsons_df`.
+```{r join2, warning=FALSE, exercise.setup = "rename1", exercise=TRUE}
+#Joining characters with lines data to episode data 
+simpsons_df <- left_join(..., ...,
+          by = c("..." = "..."))
+
+simpsons_df
+```
+
+```{r join2-solution, exercise.setup = "rename1"}
+simpsons_df <- left_join(simpsons_eps_clean, simpsons_chara_lines,
+          by = c("id" = "episode_id"))
+
+simpsons_df
+```
+
+Because `simpsons_eps_clean` already had a variable called "`id`" to identify episodes, the variable called "`id`" to identify characters from `simpsons_chara_lines` became "`id.y`" after joining.\
+Following this template `rename(new_name = old_name)`, rename "`id.y`" to `character_id`:
+```{r rename2, exercise.setup = "join2-solution", exercise = TRUE}
+simpsons_df <- simpsons_df |>
+  rename(... = ...)
+```
+
+```{r rename2-solution, exercise.setup = "join2-solution"}
+simpsons_df <- simpsons_df |>
+  rename(character_id = id.y)
+```
+
+Now that we're done joining, the missing values in `word_count` could prevent proper calculations.\
+To save us from constantly filtering them out, let's simply replace all "NA" missing values by 0.\
+To handle missing values, you can use `replace_na()`.
+```{r replace, warning=FALSE, exercise.setup = "rename2-solution", exercise=TRUE}
+simpsons_df <- simpsons_df |>
+  replace_na(list(word_count = 0))
+```
+
+## c. Practicing all functions:
+Thanks to the joined data `simpsons_df`, we can find out the **character** with **the most spoken words over the seasons** aired from 2010 to 2016:
+
+```{r words1, exercise = TRUE, exercise.setup = "replace", exercise.eval = FALSE}
+simpsons_df |>
+  summarize(total_word_count = sum(word_count),
+            .by = c(name)) |>
+  arrange(desc(total_word_count))
+```
+
+It is Homer Simpson with 52,649 spoken words!
+
+Now to find out which **seasons** aired from 2010 to 2016 had **the most spoken words**.\
+We'll save our work in a new object called `simpsons_wc_by_season`.
+```{r words2, exercise = TRUE, exercise.setup = "replace", exercise.eval = FALSE}
+simpsons_wc_by_season <- simpsons_df |>
+  summarize(total_word_count= sum(word_count),
+            avg_imdb_rating = mean(imdb_rating),
+            .by = season) |>
+  arrange(desc(total_word_count))
+
+simpsons_wc_by_season
+```
+
+It is season 24 with 51,029 spoken words!
+
+Your turn! Edit the code to find which **character** had the **most spoken words per season**:
+```{r words3, exercise = TRUE, exercise.setup = "replace", exercise.eval = FALSE}
+simpsons_df |>
+  summarize(total_word_count= sum(word_count),
+            .by = c(name)) |>
+  arrange(desc(total_word_count))
+```
+
+```{r words3-solution}
+simpsons_df |>
+  summarize(total_word_count= sum(word_count),
+            .by = c(name, season)) |>
+  arrange(desc(total_word_count))
+```
+Is it season 24 thanks to Homer Simpson having 11,243 spoken words?
+
+
+## IV. Plotting
+Earlier we calculated the summary statistics of IMDb ratings for each season but it would be more helpful to plot them to visualize them.
+
+This is where `ggplot` comes into play!
+The general recipe to use `ggplot` is:
+**a.** define the data;
+**b.** define aesthetics (color, shape):
+  - define which variables to have on the axes;
+**c.** define what kind of plot you want to make;
+  - specify how the observations are represented using geometrical objects, points, bars using `geom_boxplot()`, `geom_points()` or `geom_bar()`.
+  **d.** define labels using `labs()``.
+
+## a. Boxplots
+To create a boxplot of **IMDb ratings of each episodes per season**, you want to use `geom_boxplot()` as follows:
+```{r plotting1, echo=TRUE, , exercise=TRUE, exercise.setup="cleaning-episodes"}
+simpsons_eps_clean |> #step a : define the data
+  filter(imdb_rating != "NA") |>
+  #step b : define the aesthetic and variables
+  ggplot(aes(x = season,
+             y = imdb_rating,
+             group = season,
+             fill = season)) +
+  #step c : define what kind of plot you want to make
+  geom_boxplot() + 
+  #step d : define your labels
+  labs(x = "Season", 
+       y ="IMDb rating per episode",
+       title = "Average Season's IMDb rating of The Simpsons",
+       subtitle = "Seasons aired from 2010 to 2016"
+)
+```
+As stated earlier Season 27 and season 23 both had one of the highest rated episodes (8.2 and 8.4 respectively), but the boxplot now allows us to see that those high IMDb ratings were outliers in the season.\
+Season 23 is the season with the most outliers, and it also had the lowest IMDb rating of 4.5. The seasons ratings are generally symmetrical except for season 22 and season 24 where they're slightly skewed left.\
+Overall, the median IMDb season rating slightly decreases over the seasons.
+
+
+## b. Scatterplots
+Is there a relationship between word count and IMDb rating?
+
+Using `ggplot` and `simpsons_wc_by_season`, we can plot the IMDb ratings of each season related to the total spoken word count of the season to observe any trends:
+```{r plotting2, echo=TRUE, message=FALSE, warning=FALSE, exercise=TRUE, exercise.setup="words2"}
+simpsons_wc_by_season |> #step a : define the data
+  #step b : define the aesthetic and variables
+  ggplot(
+    mapping = aes(x = total_word_count,
+                  y = avg_imdb_rating)) +
+  #step c : define what kind of plot you want to make
+  geom_point(aes(color = season)) +
+  geom_smooth(method = "lm") +
+  #step d : define your labels
+  labs(
+    title = "Word spoken count vs Average Season's IMDb rating of The Simpsons",
+    subtitle = "Seasons aired from 2010 to 2016",
+    x = "Word spoken count",
+    y = "IMDb rating"
+    )
+```
+
+Based on the line of best fit, there seems to be a positive moderately strong linear relationship between the total number of word spoken in a season and the IMDb rating of the season.\
+Remember that correlation does not mean causation! The season with the highest average IMDb rating had one of the lowest total word count. A lot of spoken words does not necessarily mean the jokes were good.
+
+
+## c. Bar chart
+Remember when we filtered the `simpsons_characters` by gender?\
+If we wanted to create a bar chart of the gender variable to observe the gender distribution, we would use `geom_bar()`.
+*NB: filter out characters with undefined gender!*
+```{r plotting3, exercise = TRUE}
+simpsons_characters |> #step a : define the data
+  filter(gender != "NA") |> #filter out characters with undefined genders
+  #step b : define the aesthetic and variables
+  ggplot(
+    aes(x = (gender),
+        fill = gender)
+    ) +
+  #step c : define what kind of plot you want to make
+  geom_bar() +
+  #step d : define your labels
+  labs(
+    title = "Gender distribution of characters from The Simpsons",
+    x = "Gender",
+    y = "Count",
+    fill = "Gender"
+    )
+```
+The plot shows us that the majority of characters from the Simpsons are male. There are at least three times as many male characters as there are female characters.
+
+## Conclusion
+You learned some interesting trivia about the Simpsons:\
+- The best rated season of The Simpsons over 2010 to 2016 was season 25 with an average IMDb rating of 6.83 but the median IMDb season rating slightly decreases over the seasons.\
+- There are at least three times as many male characters as there are female characters.\
+- Homer Simpsons is quite verbose.
+
+
+Congratulations! You learned how to D'ohta wrangle!
