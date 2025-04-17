@@ -1,6 +1,3 @@
-# Portfolio
-This is a portfolio of projects done at Simmons University during Spring 2025.
-
 ## Biographical information
 
 ### **Maeva Assi**
@@ -12,8 +9,7 @@ This is a portfolio of projects done at Simmons University during Spring 2025.
 - **Contact**: maeva.assi@simmons.edu
 
 ### Site purpose
-This website is a potfolio to showcase my data science work.
-
+This website is a potfolio to showcase my data science work done at Simmons University during Spring 2025.
 
 ## STAT228 Projects
 ### Mini-Project 1: Cigarettes and Contractions
