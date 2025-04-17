@@ -4,7 +4,7 @@
 - Majors: Accounting & Finance, Data Science minor
 - Anticipate graduation: December 2026
 - University: Simmons University
-- A short description of your academic/professional interests (1–2 sentences)
+- Academic/professional interests: 
 - Skills: Python, R Studio, Microsoft Suite
 - Contact: maeva.assi@simmons.edu
 
