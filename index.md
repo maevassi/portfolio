@@ -1,12 +1,12 @@
 ## Biographical information
 
 ### **Maeva Assi**
-- Majors: Accounting & Finance, Data Science minor
-- Anticipate graduation: December 2026
-- University: Simmons University
-- Academic/professional interests: 
-- Skills: Python, R Studio, Microsoft Suite
-- Contact: maeva.assi@simmons.edu
+- **Majors**: Accounting & Finance, Data Science minor
+- **Anticipated graduation date**: December 2026
+- **University**: Simmons University
+- **Academic/professional interests**: Accounting and Finance. I also work part-time as a Tutor for Introduction to Statistics.
+- **Skills**: Python, R Studio, Microsoft Suite
+- **Contact**: maeva.assi@simmons.edu
 
 ### Site purpose
 This website is a potfolio to showcase my data science work.
