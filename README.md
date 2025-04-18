@@ -1,5 +1,6 @@
-## Biographical information
+# Maeva Assi's portfolio
 
+## Biographical information
 ### **Maeva Assi**
 - **Majors**: Accounting & Finance, Data Science minor
 - **Anticipated graduation date**: December 2026
