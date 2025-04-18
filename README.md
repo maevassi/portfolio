@@ -17,5 +17,5 @@ This website is a portfolio to showcase my data science work done at Simmons Uni
   - ['Cigarettes and Contractions' blog post](https://maevassi.github.io/mini-project1/maeva_assi_cigarettes_and_contractions.html)
 
 ### Mini-Project 2: Wrangling The Simpsons
-  - An interactive data wrangling tutorial on how to use functions from tidyr, dpylr and ggplot2 to manipulate rows and columns and visualize data, using a dataset containing character details, episode details, and script lines for approximately 600 episodes of The Simpsons.
+  - An interactive data wrangling tutorial on how to use functions from tidyr, dplyr and ggplot2 to manipulate rows and columns and visualize data, using a dataset containing character details, episode details, and script lines for approximately 600 episodes of The Simpsons.
   - ['Wrangling The Simpsons' blog post](https://maevassi.github.io/mini-project2/maeva_assi_wrangling_the_simpsons.html)
