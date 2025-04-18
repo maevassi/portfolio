@@ -1,4 +1,3 @@
-# Maeva Assi's portfolio
 
 ## Biographical information
 ### **Maeva Assi**
