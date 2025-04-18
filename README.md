@@ -9,7 +9,7 @@
 - **Contact**: maeva.assi@simmons.edu
 
 ### Site purpose
-This website is a potfolio to showcase my data science work done at Simmons University during Spring 2025.
+This website is a portfolio to showcase my data science work done at Simmons University during Spring 2025.
 
 ## STAT228 Projects
 ### Mini-Project 1: Cigarettes and Contractions
