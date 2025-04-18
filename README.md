@@ -18,4 +18,4 @@ This website is a potfolio to showcase my data science work done at Simmons Univ
 
 ### Mini-Project 2: Wrangling The Simpsons
   - An interactive data wrangling tutorial on how to use functions from tidyr, dyplr and ggplot2 to manipulate rows and columns and visualize data, using a dataset containing character details, episode details, and script lines for approximately 600 episodes of The Simpsons.
-  - ['Wrangling The Simpsons' blog post]([https://github.com/maevassi/mini-project2](https://maevassi.github.io/mini-project2/maeva_assi_wrangling_the_simpsons.html))
+  - ['Wrangling The Simpsons' blog post](https://maevassi.github.io/mini-project2/maeva_assi_wrangling_the_simpsons.html)
