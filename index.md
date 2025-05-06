@@ -3,7 +3,7 @@ title: Data Science Portfolio
 ---
 
 # Hello, I'm **Maeva Assi**.
-This website is a portfolio to showcase my data science work done at Simmons University during Spring 2025.
+This online portfolio's purpose is to showcase my data science work done at Simmons University during the Spring 2025 semester.
 
 ## About me
 - **Majors**: Accounting & Finance, Data Science minor
