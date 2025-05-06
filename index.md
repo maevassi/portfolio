@@ -3,7 +3,9 @@ title: Data Science Portfolio
 ---
 
 ## Biographical information
-### **Maeva Assi**
+Hello, I'm **Maeva Assi**. This website is a portfolio to showcase my data science work done at Simmons University during Spring 2025.
+
+## About me
 - **Majors**: Accounting & Finance, Data Science minor
 - **Anticipated graduation date**: December 2026
 - **University**: Simmons University
@@ -12,7 +14,7 @@ title: Data Science Portfolio
 - **Contact**: maeva.assi@simmons.edu
 
 ### Site purpose
-This website is a portfolio to showcase my data science work done at Simmons University during Spring 2025.
+
 
 ## STAT228 Projects
 ### Mini-Project 1: Cigarettes and Contractions
