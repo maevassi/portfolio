@@ -1,3 +1,7 @@
+---
+layout: home
+title: Data Science Portfolio
+---
 
 ## Biographical information
 ### **Maeva Assi**
