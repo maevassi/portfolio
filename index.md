@@ -26,3 +26,4 @@ This online portfolio's purpose is to showcase my data science work done at Simm
 ### Final Project: Who Checkmated? - Predicting the winner of a chess game
   - Chess is an abstract strategy game which involves no hidden information and no elements of chance. This project tries to predict if a game resulted in a black or white winner depending on the player level using a Chess Game Dataset with just over 20,000 games collected from a selection of users from the free open source chess server Lichess.org.
   - ['Who Checkmated?' blog post](https://maevassi.github.io/final-project/maeva_assi_who_checkmated.html)
+  - ['Who Checkmated?' slides pdf](https://maevassi.github.io/final-project/who_wheckmated_slides.pdf)\
